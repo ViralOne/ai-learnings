@@ -1,15 +1,20 @@
 import argparse
 import os
+import time
+import langchain
+import langchain.llms
 from langchain_community.vectorstores.chroma import Chroma
 from langchain_openai import ChatOpenAI
 from langchain_community.embeddings import GPT4AllEmbeddings
 from langchain.prompts import ChatPromptTemplate
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationChain
+from langchain.cache import SQLiteCache
 
 os.environ["OPENAI_API_KEY"] = "no_need"
 
 CHROMA_PATH = "docs/chroma"
+LLM_CACHE_PATH = "docs/llm_cache.db"
 
 PROMPT_TEMPLATE = """
 Answer the question based only on the following context:
@@ -39,12 +44,15 @@ def main():
         return_messages=True
     )
 
+    langchain.llm_cache = SQLiteCache(database_path=LLM_CACHE_PATH)
+
     conversation = ConversationChain(
         llm=model,
         memory=memory,
         verbose=False
     )
-    
+
+    start_time = time.time()
     results = db.similarity_search_with_score(query_text, k=3)
     # results = db.similarity_search_with_relevance_scores(query_text, k=3) # it does not return anything
     if len(results) == 0 or results[0][1] < 0.7:
@@ -59,7 +67,9 @@ def main():
 
     sources = [doc.metadata.get("source", None) for doc, _score in results]
     formatted_response = f"Response: {response_text}\nSources: {sources}"
+    end_time = time.time()
     print(formatted_response)
+    print(f"Time taken: {end_time - start_time:.2f} seconds")
 
 if __name__ == "__main__":
     main()
