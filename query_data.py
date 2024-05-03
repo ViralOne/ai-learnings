@@ -18,12 +18,15 @@ CHROMA_PATH = "docs/chroma"
 LLM_CACHE_PATH = "docs/llm_cache.db"
 
 PROMPT_TEMPLATE = """
-Answer the question based only on the following context:
-{context}
+<|start_header_id|>user<|end_header_id|>
+You are an assistant for answering questions about the company HandBook.
+You are given the extracted parts of a long document and a question. Provide a conversational answer.
+If you don't know the answer, just say "I do not know." Don't make up an answer.
+Answer the question: {question}
 DO NOT give irelevant information that is not in the context.
 Remember the correct word for the company is AgileFreaks.
+Context: {context} <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 ---
-Answer the question based on the above context: {question}
 """
 
 def main():
@@ -70,8 +73,8 @@ def main():
 
     response_text = conversation.predict(input=prompt)
 
-    sources = [doc.metadata.get("source", None) for doc, _score in results]
-    formatted_response = f"Response: {response_text}\nSources: {sources}"
+    sources = {doc.metadata.get("source", None) for doc, _score in results}
+    formatted_response = f"Response: {response_text}\nSources: {', '.join(sources)}"
     end_time = time.time()
     print(formatted_response)
     print(f"Time taken: {end_time - start_time:.2f} seconds")
