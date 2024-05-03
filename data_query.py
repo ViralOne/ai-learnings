@@ -61,7 +61,7 @@ def main():
     )
 
     start_time = time.time()
-    results = db.similarity_search_with_score(query_text, k=3)
+    results = db.similarity_search_with_score(query_text, k=5)
     relevance_score = results[0][1]
     if relevance_score < 0 or relevance_score > 1:
         print("Invalid relevance score. Please check your data.")
