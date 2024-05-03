@@ -38,6 +38,11 @@ def split_data():
 
     # Split Text into chunks
     text_splitter = RecursiveCharacterTextSplitter(
+        separators=[
+            "\n\n",
+            "\n"
+        ],
+        keep_separator=True,
         chunk_size = 1000,
         chunk_overlap = 250,
         add_start_index=True
@@ -49,13 +54,12 @@ def split_data():
 
 def save_chunks(chunks):
     embedding_function = GPT4AllEmbeddings(device='gpu')
-    db = Chroma.from_documents(
+    Chroma.from_documents(
         documents=chunks, 
         embedding=embedding_function,
         persist_directory=chroma_dir
         )
-    print(f"Saved {(len.chunks)} chunks to {chroma_dir}")
-
+    print(f"Chunks saved to {chroma_dir}")
 
 def main():
     # Check if the cloned repo exists

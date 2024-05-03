@@ -17,12 +17,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("query_text", type=str, help="The query text.")
     args = parser.parse_args()
-
     query_text = main(args.query_text)
 
     query_result = [doc.page_content for doc, _score in query_text]
-    print("Result: ", query_result)
+    for result in query_result:
+        for line in result.split('\n'):
+            print(line)
 
     # Get sources
-    sources = [doc.metadata.get("source", None) for doc, _score in query_text]
-    print("Sources: ", sources)
+    sources = {doc.metadata.get("source", None) for doc, _score in query_text}
+
+    print(f"Sources: {', '.join(sources)}")
