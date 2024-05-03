@@ -42,7 +42,10 @@ def main():
     qa = RetrievalQA.from_chain_type(
         llm=model,
         chain_type='stuff',
-        retriever=db.as_retriever(),
+        retriever=db.as_retriever(
+            search_type="mmr",
+            search_kwargs={"k": 3},
+        ),
         verbose=True,
         chain_type_kwargs={
             "verbose": True,

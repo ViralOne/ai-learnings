@@ -4,10 +4,11 @@ import time
 import langchain
 import langchain.llms
 from langchain_community.vectorstores.chroma import Chroma
-from langchain_openai import ChatOpenAI
 from langchain_community.embeddings import GPT4AllEmbeddings
+from langchain_community.chat_message_histories import FileChatMessageHistory
+from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationSummaryMemory
 from langchain.chains import ConversationChain
 from langchain.cache import SQLiteCache
 
@@ -39,7 +40,11 @@ def main():
     model = ChatOpenAI(openai_api_base="http://localhost:3008/v1", model_name="lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF")
 
     # Prepare the memory.
-    memory = ConversationBufferMemory(
+    message_history = FileChatMessageHistory(file_path = 'conversation_history.txt')
+
+    memory = ConversationSummaryMemory(
+        llm=model,
+        chat_memory=message_history,
         memory_key="history",
         return_messages=True
     )
