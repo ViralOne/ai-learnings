@@ -40,7 +40,8 @@ def split_data():
     text_splitter = RecursiveCharacterTextSplitter(
         separators=[
             "\n\n",
-            "\n"
+            "\n",
+            "__"
         ],
         keep_separator=True,
         chunk_size = 1000,

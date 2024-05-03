@@ -62,10 +62,13 @@ def main():
 
     start_time = time.time()
     results = db.similarity_search_with_score(query_text, k=3)
-    # results = db.similarity_search_with_relevance_scores(query_text, k=3) # it does not return anything
-    if len(results) == 0 or results[0][1] < 0.7:
-        print(f"Unable to find matching results.")
-        return
+    relevance_score = results[0][1]
+    if relevance_score < 0 or relevance_score > 1:
+        print("Invalid relevance score. Please check your data.")
+    else:
+        if len(results) == 0 or results[0][1] <= 0.4:
+            print(f"Unable to find matching results.")
+            return
 
     context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
     prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
