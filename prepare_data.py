@@ -1,6 +1,4 @@
 import os
-import fileinput
-import shutil
 import logging
 from langchain_community.document_loaders import DirectoryLoader, UnstructuredMarkdownLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter, CharacterTextSplitter, MarkdownHeaderTextSplitter
@@ -13,7 +11,6 @@ SOURCE_DIR = "docs/handbook"
 DESNTINATION_DIR = "docs/handbook_files"
 CHROMA_DIR = "docs/chroma"
 FILE_PATERN = '---'
-
 
 def clone():
     """Clone the Handbook repository."""
@@ -41,7 +38,7 @@ def move_files(source_dir, destination_dir):
                 destination_path = os.path.join(destination_dir, file)
 
                 try:
-                    shutil.move(source_path, destination_path)
+                    os.rename(source_path, destination_path)
                     logging.info(f"Moved '{source_path}' to '{destination_path}'")
                 except Exception as e:
                     logging.error(f"Error moving file: {e}")
