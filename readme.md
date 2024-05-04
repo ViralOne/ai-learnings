@@ -23,10 +23,10 @@ To use the project, follow these steps:
 ** Steps to run **
 ---------
 1. Run `prepare_data.py`
-2. Run `query_db.py "<Your text>"` to play with the vectorized data
-3. Run `query_data.py "<Your prompt>"` to talk with the files
+2. Run `db_query.py "<Your text>"` to play with the vectorized data
+3. Run `data_query.py "<Your prompt>"` to talk with the files
 
 ** Other files **
 ---------
 1. `handbook.ipynb` - debugging version of the scripts from *Run* step + more tests
-2. `qa_memory_test.py` - similar to `query_data.py` but it's using a different methods
+2. `qa_data_query.py` - similar to `data_query.py` but it's using a different methods
