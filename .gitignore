@@ -1,3 +1,4 @@
 docs/*
 __pycache__/*
 conversation_history.txt
+ai_news/docs/*
