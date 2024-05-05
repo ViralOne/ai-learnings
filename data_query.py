@@ -54,7 +54,7 @@ def llm_chain(llm, cache, memory):
     conversation = ConversationChain(llm=llm, memory=memory, verbose=False)
     return conversation
 
-def augment_query_generated(query, llm, memory):
+def query_expansion(query, llm, memory):
     # https://arxiv.org/abs/2305.03653
     prompt_template = ChatPromptTemplate.from_template(AUGUMENT_QUERY_TEMPLATE)
     prompt = prompt_template.format(question=query)
@@ -63,7 +63,10 @@ def augment_query_generated(query, llm, memory):
 
     return response_text
 
-def query_db(query_text, db, llm, memory):
+def evaluate_results(query_text):
+    pass
+
+def query_db(query_text, db):
     # Retrieve search results
     results = db.similarity_search_with_score(query_text, k=5)
 
@@ -103,10 +106,14 @@ if __name__ == "__main__":
     llm = prepare_llm(openai_api_base="http://localhost:3008/v1", model_name="lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF")
     memory = prepare_memory(llm, FileChatMessageHistory(file_path='conversation_history.txt'), "history", True)
 
+    # Evaluate results
+    # TODO
+    evaluate_results(query_text)
+
     # Expand the query
-    query_text = augment_query_generated(query_text, llm, memory)
+    query_text = query_expansion(query_text, llm, memory)
 
     # Query DB
-    db_query, sources = query_db(query_text, db, llm, memory)
+    db_query, sources = query_db(query_text, db)
 
     process_query(query_text, db_query, sources, llm, memory)
